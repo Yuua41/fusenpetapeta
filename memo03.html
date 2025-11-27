@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>myMemoPad中級</title>
+    <link rel="stylesheet" href="css/sample.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>MemoPad課題用</h1>
+    </header>
+
+    <main>
+      <input type="text" id="name" />
+      <div id="sousu">
+        <p>何人入れました</p>
+      </div>
+      <input type="text" id="sankasha" />
+      
+
+      <input type="text" id="input" />
+      <textarea id="text_area"></textarea>
+      <ul>
+        <li id="save">Save</li>
+        <li id="clear">Clear</li>
+      </ul>
+    </main>
+
+
+    <footer>
+      <small>G's</small>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+      const names = [];
+      console.log(names.length);
+        localStorage.setItem("member", names);
+
+
+      $("#save").on("click", function () {
+        names.push($("#name").val());
+        console.log(names);
+        localStorage.setItem("member", names);
+
+        $("#name").val(""); //("")は空にする。何もない文字で上書き
+
+        $("#sousu").text(names.length);
+        $("#sankasha").val(names);
+
+
+      });
+
+      // 保存する
+      $("#save").on("click", function () {
+        const date = {
+          title: $("#input").val(),
+          text: $("#text_area").val(),
+        };
+        console.log(date);
+
+        //  JSON形式に変換
+        const json = JSON.stringify(date);
+        console.log(json);
+        localStorage.setItem("memo", json);
+      });
+
+      // 削除する
+      $("#clear").on("click", function () {
+        localStorage.removeItem("memo");
+        localStorage.removeItem("member");
+
+        $("#input").val(""); //("")は空にする。何もない文字で上書き
+        $("#text_area").val(""); //("")は空にする。何もない文字で上書き
+      });
+
+      //保存したものを取り出す
+      if (localStorage.getItem("memo")) {
+        // JSON形式のデータを元に戻す
+        const json = localStorage.getItem("memo");
+        console.log(json);
+        const data = JSON.parse(json);
+        console.log(data);
+
+        $("#input").val(data.title); //オブジェクト「.」で指定する
+        $("#text_area").val(data.text);
+      }
+    </script>
+  </body>
+</html>
