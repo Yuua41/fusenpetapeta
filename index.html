@@ -14,6 +14,7 @@
     </header>
 
     <main>
+      <div id="leaves">登録数：0枚</div>
       <div id="input_area">
         <div id="fusen_area" class="area">
           <div class="fusen">付箋を貼っていく</div>
@@ -95,16 +96,15 @@
                   
                   </div>
                   </div>
-                    <p class="fusen_text">${data.text.substring(0, 100)}</p>
+                    <p class="fusen_text">${data.text}</p>
                 </div>
             `;
           fusenArea.append(fusenHtml);
         });
       }
 
-      // ------------------------------------
-      // --- ページロード時の初期設定 ---
-      // ------------------------------------
+      // ページロード時
+
       $(document).ready(function () {
         // 1. 今日の日付設定
         const today = new Date();
@@ -123,11 +123,10 @@
         selectElement.addEventListener("change", updateSampleColor);
         updateSampleColor(); // 初期色を設定
 
-        // 3. データロードと画面表示 ★ここでloadと表示を実行★
+        // 3. データロードと画面表示
         loadfusendate();
         makeFusen();
       });
-
 
       // 新しい付箋を保存
       $("#save").on("click", function () {
@@ -151,7 +150,11 @@
         // 画面に再描画
         makeFusen();
 
-        // 入力フォームをクリア（オプション）
+        console.log(fusendate.length);
+
+        $("#leaves").text("登録数：" + fusendate.length + "枚");
+
+        // 入力フォームをデフォルトに戻す
         $("#title").val("無題");
         $("#text_area").val("ここに記入");
       });
@@ -160,15 +163,11 @@
       $("#all_clear").on("click", function () {
         if (confirm("全ての付箋を削除しますか？")) {
           fusendate = []; // データ配列を空にする
-          savefusendate(); // LocalStorageに空の配列を保存
-          makeFusen(); // 画面を更新（付箋が全て消える）
-        }
-      });
+          savefusendate(); // LocalStorageを空で保存
+          makeFusen(); // 画面も消す
+        $("#leaves").text("登録数：0枚");
 
-      // 1件削除（今回は入力フォームのリセットとして機能させる）
-      $("#clear").on("click", function () {
-        $("#title").val("無題");
-        $("#text_area").val("ここに記入");
+        }
       });
     </script>
   </body>
