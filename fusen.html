@@ -57,47 +57,40 @@
     <footer></footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-      // 付箋データを格納する配列
-      let fusendate = [];
+      // --- グローバル変数として付箋データを格納する配列を用意 (初期化/ロード時に使う) ---
+      let fusenData = [];
 
-      // 付箋データをLocalStorageに保存
-      function savefusendate() {
-        localStorage.setItem("all_fusens", JSON.stringify(fusendate));
+      // --- 付箋データをLocalStorageに保存する関数 ---
+      function saveFusenData() {
+        localStorage.setItem("all_fusens", JSON.stringify(fusenData));
       }
 
-      // LocalStorageから付箋データをロード
-      function loadfusendate() {
+      // --- LocalStorageから付箋データをロードする関数 ---
+      function loadFusenData() {
         const json = localStorage.getItem("all_fusens");
         if (json) {
-          fusendate = JSON.parse(json);
+          fusenData = JSON.parse(json);
         } else {
-          fusendate = [];
+          fusenData = [];
         }
       }
 
-      function makeFusen() {
+      // --- 付箋を画面にレンダリング（表示）する関数 ---
+      function renderFusen() {
         const fusenArea = $("#fusen_area");
         fusenArea.empty(); // 古い付箋を全てクリアしてから再描画
 
-        fusendate.forEach((data) => {
+        fusenData.forEach((data) => {
           // 描画用のHTMLを生成
           const fusenHtml = `
-                <div class="fusen" data-id="${
-                  data.id
-                }" style="background-color: ${data.color};">
-                <div class="fusentop">
-                  <div>
-                    <p class="fusen_date">${data.date}</p>
-                  
-                  </div>
-                  <div>
-                    <p class="fusen_title">${data.title}</p>
-                  
-                  </div>
-                  </div>
-                    <p class="fusen_text">${data.text.substring(0, 100)}</p>
-                </div>
-            `;
+      <div class="fusen" data-id="${data.id}" style="background-color: ${
+            data.color
+          };">
+        <p class="fusen_date">${data.date}</p>
+        <h3 class="fusen_title">${data.title}</h3>
+        <p class="fusen_text">${data.text.substring(0, 100)}...</p>
+      </div>
+    `;
           fusenArea.append(fusenHtml);
         });
       }
@@ -106,7 +99,7 @@
       // --- ページロード時の初期設定 ---
       // ------------------------------------
       $(document).ready(function () {
-        // 1. 今日の日付設定
+        // 1. 今日の日付設定 (既存コードをDOMContentLoadedから移動)
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = ("0" + (today.getMonth() + 1)).slice(-2);
@@ -114,25 +107,30 @@
         const formattedDate = yyyy + "-" + mm + "-" + dd;
         $("#date").val(formattedDate);
 
-        // 2. カラーセレクタの動作設定
+        // 2. カラーセレクタの動作設定 (既存コードをDOMContentLoadedから移動)
         const selectElement = document.getElementById("back_color");
         const sampleElement = document.querySelector(".sample_color");
         const updateSampleColor = () => {
           sampleElement.style.backgroundColor = selectElement.value;
         };
+
         selectElement.addEventListener("change", updateSampleColor);
         updateSampleColor(); // 初期色を設定
 
-        // 3. データロードと画面表示 ★ここでloadと表示を実行★
-        loadfusendate();
-        makeFusen();
+        // 3. データロードと画面表示
+        loadFusenData();
+        renderFusen();
       });
 
+      // ------------------------------------
+      // --- イベントハンドラ ---
+      // ------------------------------------
 
       // 新しい付箋を保存
       $("#save").on("click", function () {
         // フォームからデータを取得
         const newFusen = {
+          // ユニークなIDを付与 (現在のタイムスタンプを簡略的に使用)
           id: Date.now(),
           date: $("#date").val(),
           title: $("#title").val(),
@@ -140,16 +138,14 @@
           color: $("#back_color").val(),
         };
 
-        console.log(fusendate);
-
         // データ配列に追加
-        fusendate.push(newFusen);
+        fusenData.push(newFusen);
 
         // LocalStorageに保存
-        savefusendate();
+        saveFusenData();
 
         // 画面に再描画
-        makeFusen();
+        renderFusen();
 
         // 入力フォームをクリア（オプション）
         $("#title").val("無題");
@@ -158,17 +154,21 @@
 
       // 全ての付箋を削除
       $("#all_clear").on("click", function () {
-        if (confirm("全ての付箋を削除しますか？")) {
-          fusendate = []; // データ配列を空にする
-          savefusendate(); // LocalStorageに空の配列を保存
-          makeFusen(); // 画面を更新（付箋が全て消える）
+        if (confirm("全ての付箋データを削除してもよろしいですか？")) {
+          fusenData = []; // データ配列を空にする
+          saveFusenData(); // LocalStorageに空の配列を保存
+          renderFusen(); // 画面を更新（付箋が全て消える）
         }
       });
 
-      // 1件削除（今回は入力フォームのリセットとして機能させる）
+      // 1件削除 (ここではフォームの内容をクリアする動作として修正)
+      // 複数付箋の削除は複雑なので、一旦フォームのリセットに留める
       $("#clear").on("click", function () {
-        $("#title").val("無題");
-        $("#text_area").val("ここに記入");
+        $("#title").val("無題"); // タイトルをリセット
+        $("#text_area").val("ここに記入"); // 本文をリセット
+        // 日付、色は変更しない
+
+        // LocalStorageのデータを削除しないように修正
       });
     </script>
   </body>
