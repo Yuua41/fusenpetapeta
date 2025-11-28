@@ -95,3 +95,15 @@ textarea {
   transition: background-color 0.3s;
   font-size: 24px;
 }
+
+.fusen{
+  width: 300px;
+  height: 300px;
+  box-shadow: 3px 3px 3px 3px #555;
+  margin: 10px;
+}
+
+.fusentop{
+  display: flex;
+  
+}
