@@ -1,68 +1,97 @@
-body{
-    margin:0;
-    padding:0;
-    text-align:left;
-    font-size: 32px;
+body {
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
-header{
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    text-align: center;
+header {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
 }
-main{
-    border-bottom:1px solid #ccc;
-    position:relative;
-}
-footer{
-    background-color: #fff;
-    border-bottom:1px solid #ccc;
-    text-align: center;
-}
-p{
-    font-size:200%;
-    text-align: center;
-    border-bottom:1px solid #fff;
-    height:100px;
-}
-ul{
-    padding: 0;
-    border-top: 1px solid #000000;
-    display:table;  /* 定義 */
-    table-layout: fixed;
-    width:100%;
-}
-li{
-    text-align: center;
-    list-style-type:none;
-    border: 1px solid #666;
-    background-color: #FFF;
-    display:table-cell;  /* 定義 */
-    cursor: pointer;
-}
-li:hover{
-    background: #0066CC;
-    color:#fff;
-}
-input,textarea{
-    margin: 3%;
-    width: 95%;
-    font-size:80%;
-    box-shadow: 3px 3px 3px 3px #555;
-}
-input{
-    height: 30px;
-}
-textarea{
-    height: 230px;
+main {
+  border-bottom: 1px solid #ccc;
+  position: relative;
 }
 
-div{
-  height: 200px;
-  overflow-y: scroll;
-  border: 1px solid #666;
-  margin: 10px;
+p{
+    margin-left: 50px;
 }
-div p{
-  font-size: 1.5rem;
-  height: auto;
+
+ul {
+  padding: 0;
+  border-top: 1px solid #000000;
+  display: table; /* 定義 */
+  table-layout: fixed;
+  width: 100%;
+}
+
+li {
+  text-align: center;
+  list-style-type: none;
+  border: 1px solid #666;
+  background-color: #fff;
+  display: table-cell; /* 定義 */
+  cursor: pointer;
+}
+
+li:hover {
+  background: #0066cc;
+  color: #fff;
+}
+input,
+textarea {
+  margin:0px 50px;
+  width: 90%;
+}
+input {
+  height: 30px;
+}
+textarea {
+  height: 230px;
+}
+
+#date {
+  width: 200px;
+}
+
+.area {
+  padding: 10px;
+  background-color: #fffcd7;
+}
+
+#save {
+  color: #fafafa;
+  font-size: 18px;
+  font-weight: bold;
+  background: #222222;
+  padding: 15px 100px;
+  display: inline-block;
+  text-decoration: none;
+  margin: 0px 50px;
+}
+#save:hover {
+  border-radius: 12px;
+  transform: scale(1.1);
+}
+
+#form_top {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+#back_color {
+  margin: 0px 50px;
+  width: 100px;
+  height: 50px;
+}
+.color_select {
+  display: flex;
+}
+
+.sample_color {
+  padding: 10px;
+  border: 1px solid #333;
+  transition: background-color 0.3s;
+  font-size: 24px;
 }
