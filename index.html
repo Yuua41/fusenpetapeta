@@ -4,38 +4,96 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>myMemoPad中級</title>
+    <title>付箋ペタペタ</title>
     <link rel="stylesheet" href="css/fusenpeta.css" />
   </head>
 
   <body>
     <header>
-      <h1>MemoPad課題用</h1>
+      <h1>付箋ペタペタ</h1>
     </header>
 
     <main>
-      名前
-      <input type="text" id="name" />
-      <div id="sousu">
-        <p>何人入れました</p>
-      </div>
-      <input type="text" id="sankasha" />
+      <div id="input_area">
+        <div id="fusen_area" class="area">
+          <div class="fusen">付箋を貼っていく</div>
+        </div>
 
-      <input type="text" id="input" />
-      <textarea id="text_area"></textarea>
+        <div id="form_top">
+          <div>
+            <input type="date" id="date" />
+          </div>
+          <div id="save">登録</div>
+        </div>
+        <p>タイトル</p>
+        <input type="text" id="title" value="無題"/>
+
+        <p>本文</p>
+        <textarea id="text_area" cols="280">ここに記入</textarea>
+
+        <p>背景色</p>
+        <div class="color_select">
+          <div>
+            <select id="back_color">
+              <option value="#fff7c9">黄色</option>
+              <option value="#c0e4f2">水色</option>
+              <option value="#d2e7bf">緑色</option>
+              <option value="#f7c4d4">ピンク</option>
+            </select>
+          </div>
+          <div class="sample_color">
+            <div>背景色のサンプル</div>
+          </div>
+        </div>
+      </div>
+
       <ul>
-        <li id="save">登録</li>
-        <li id="clear">削除</li>
-        <li id="call">呼び出し</li>
+        <li id="rewrite">上書き保存</li>
+        <li id="clear">1件削除</li>
+        <li id="all_clear">全消し</li>
       </ul>
     </main>
 
     <footer></footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-      const names = [];
-      console.log(names.length);
-      localStorage.setItem("member", names);
+      // 今日の日付
+      window.onload = function () {
+        // 1. 現在の日付を取得
+        var today = new Date();
+
+        // 2. 年、月、日を取得し、'YYYY-MM-DD'形式に整形
+        var yyyy = today.getFullYear();
+        var mm = ("0" + (today.getMonth() + 1)).slice(-2); // 月を2桁にする
+        var dd = ("0" + today.getDate()).slice(-2); // 日を2桁にする
+
+        // 3. 'YYYY-MM-DD'形式の文字列を生成
+        var formattedDate = yyyy + "-" + mm + "-" + dd;
+
+        // 4. IDが "today" の要素に値を設定
+        document.getElementById("date").value = formattedDate;
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. セレクトボックスの要素を取得
+        const selectElement = document.getElementById("back_color");
+
+        // 2. 背景色を変更したいサンプル要素を取得
+        const sampleElement = document.querySelector(".sample_color");
+
+        // 3. セレクトボックスの値が変更されたときのイベントリスナーを設定
+        selectElement.addEventListener("change", () => {
+          // 4. 選択された <option> の value (カラーコード) を取得
+          const selectedColor = selectElement.value;
+
+          // 5. サンプル要素の背景色を変更
+          sampleElement.style.backgroundColor = selectedColor;
+        });
+
+        // 補足: ページロード時の初期設定
+        // ページが読み込まれたとき、最初に選択されているオプションの色をサンプルに適用します
+        sampleElement.style.backgroundColor = selectElement.value;
+      });
 
       $("#save").on("click", function () {
         names.push($("#name").val());
