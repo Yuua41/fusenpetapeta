@@ -56,7 +56,10 @@ textarea {
 
 .area {
   padding: 10px;
-  background-color: #fffcd7;
+  background-color: #fafafa;
+  display: flex;
+  flex-wrap: wrap;
+  /* 折り返す */
 }
 
 #save {
@@ -94,16 +97,17 @@ textarea {
   border: 1px solid #333;
   transition: background-color 0.3s;
   font-size: 24px;
+  box-shadow: 1px 1px 1px 1px #555;
+
 }
 
 .fusen{
   width: 300px;
   height: 300px;
-  box-shadow: 3px 3px 3px 3px #555;
+  box-shadow: 1px 1px 1px 1px #555;
   margin: 10px;
 }
 
 .fusentop{
   display: flex;
-  
 }
