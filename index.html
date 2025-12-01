@@ -60,6 +60,8 @@
     <script>
       // 付箋データを格納する配列
       let fusendate = [];
+      // 現在選択中の付箋のIDを格納する変数
+      let currentFusenId = null;
 
       // 付箋データをLocalStorageに保存
       function savefusendate() {
@@ -83,9 +85,7 @@
         fusendate.forEach((data) => {
           // 描画用のHTMLを生成
           const fusenHtml = `
-                <div class="fusen" data-id="${
-                  data.id
-                }" style="background-color: ${data.color};">
+                <div class="fusen" data-id="${data.id}" style="background-color: ${data.color};">
                 <div class="fusentop">
                   <div>
                     <p class="fusen_date">${data.date}</p>
@@ -106,7 +106,7 @@
       // ページロード時
 
       $(document).ready(function () {
-        // 1. 今日の日付設定
+        // 今日の日付設定
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = ("0" + (today.getMonth() + 1)).slice(-2);
@@ -114,7 +114,7 @@
         const formattedDate = yyyy + "-" + mm + "-" + dd;
         $("#date").val(formattedDate);
 
-        // 2. カラーセレクタの動作設定
+        //カラーセレクタの動作設定
         const selectElement = document.getElementById("back_color");
         const sampleElement = document.querySelector(".sample_color");
         const updateSampleColor = () => {
@@ -123,7 +123,7 @@
         selectElement.addEventListener("change", updateSampleColor);
         updateSampleColor(); // 初期色を設定
 
-        // 3. データロードと画面表示
+        // データロードと画面表示
         loadfusendate();
         makeFusen();
       });
@@ -165,10 +165,136 @@
           fusendate = []; // データ配列を空にする
           savefusendate(); // LocalStorageを空で保存
           makeFusen(); // 画面も消す
-        $("#leaves").text("登録数：0枚");
-
+          $("#leaves").text("登録数：0枚");
         }
       });
+
+      function makeFusen() {
+        const fusenArea = $("#fusen_area");
+        fusenArea.empty(); // 古い付箋を全てクリアしてから再描画
+
+        fusendate.forEach((data) => {
+          // 描画用のHTMLを生成
+          const fusenHtml = `
+            <div class="fusen" data-id="${data.id}" style="background-color: ${data.color};">
+                <div class="fusentop">
+                  <div>
+                    <p class="fusen_date">${data.date}</p>
+                  </div>
+                  <div>
+                    <p class="fusen_title">${data.title}</p>
+                  </div>
+                </div>
+                <p class="fusen_text">${data.text}</p>
+            </div>
+        `;
+          fusenArea.append(fusenHtml);
+        });
+
+        // ⭐︎【追加】付箋クリックイベントのリスナーを設定
+        $(".fusen").on("click", function () {
+          const id = $(this).data("id");
+          displayFusenData(id);
+        });
+      }
+
+      // ⭐︎【追加】付箋の内容を入力フォームに転記する関数
+      function displayFusenData(id) {
+        // クリックされた付箋のIDに一致するデータを配列から見つける
+        const clickedFusen = fusendate.find((data) => data.id === id);
+
+        if (clickedFusen) {
+          currentFusenId = id;
+          // 入力フォームの各要素にデータを転記
+          $("#date").val(clickedFusen.date);
+          $("#title").val(clickedFusen.title);
+          $("#text_area").val(clickedFusen.text);
+
+          // 背景色をドロップダウンに設定
+          $("#back_color").val(clickedFusen.color);
+
+          document.querySelector(".sample_color").style.backgroundColor =
+            clickedFusen.color;
+        }
+      }
+
+      // ⭐一件削除の処理
+      $("#clear").on("click", function () {
+        if (currentFusenId === null) {
+          alert("削除する付箋が選択されていません。");
+          return;
+        }
+
+        if (confirm("選択した付箋を削除しますか？")) {
+          // 現在のIDと一致しないものだけで新しい配列を作成（削除）
+          fusendate = fusendate.filter((data) => data.id !== currentFusenId);
+
+          // LocalStorageに保存
+          savefusendate();
+
+          // 画面に再描画
+          makeFusen();
+
+          // 登録数を更新
+          $("#leaves").text("登録数：" + fusendate.length + "枚");
+
+          // フォームを初期状態に戻す
+          $("#title").val("無題");
+          $("#text_area").val("ここに記入");
+          // IDもクリア
+          currentFusenId = null;
+
+          alert("付箋を１件削除しました。");
+        }
+      });
+
+      // ⭐︎【追加】上書き保存の処理
+      $("#rewrite").on("click", function () {
+        // 選択中の付箋があるか確認
+        if (currentFusenId === null) {
+          alert("上書き保存する付箋を選択してください。");
+          return;
+        }
+
+        if (confirm("現在の内容で上書き保存しますか？")) {
+          // 1. 編集対象のデータを見つける
+          const targetIndex = fusendate.findIndex(
+            (data) => data.id === currentFusenId
+          );
+
+          if (targetIndex !== -1) {
+            // 2. 新しい内容で上書きするためのデータオブジェクトを作成
+            const updatedFusen = {
+              id: currentFusenId, // IDは変えない
+              date: $("#date").val(),
+              title: $("#title").val(),
+              text: $("#text_area").val(),
+              color: $("#back_color").val(),
+            };
+
+            // 3. 配列内のデータを更新
+            fusendate[targetIndex] = updatedFusen;
+
+            // 4. LocalStorageに保存
+            savefusendate();
+
+            // 5. 画面に再描画
+            makeFusen();
+
+            // 6. フォームを初期状態に戻す
+            $("#title").val("無題");
+            $("#text_area").val("ここに記入");
+            currentFusenId = null;
+
+            alert("付箋を上書き保存しました。");
+          } else {
+            alert("エラー: 選択した付箋が見つかりませんでした。");
+          }
+        }
+      });
+
+
+      
     </script>
   </body>
 </html>
