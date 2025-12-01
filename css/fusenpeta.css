@@ -106,8 +106,14 @@ textarea {
   height: 300px;
   box-shadow: 1px 1px 1px 1px #555;
   margin: 10px;
+  color: #0a0a0a;
+  font-family: "Meiryo", "メイリオ", sans-serif;
 }
 
 .fusentop{
   display: flex;
+}
+
+.fusen:hover {
+  transform: scale(1.01);
 }
