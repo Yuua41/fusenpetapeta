@@ -66,7 +66,7 @@ textarea {
   color: #fafafa;
   font-size: 18px;
   font-weight: bold;
-  background: #222222;
+  background: #808080;
   padding: 15px 100px;
   display: inline-block;
   text-decoration: none;
@@ -74,6 +74,7 @@ textarea {
 }
 #save:hover {
   border-radius: 12px;
+  background: #222222;
   transform: scale(1.1);
 }
 
@@ -107,11 +108,7 @@ textarea {
   box-shadow: 1px 1px 1px 1px #555;
   margin: 10px;
   color: #0a0a0a;
-  font-family: "Meiryo", "メイリオ", sans-serif;
-}
-
-.fusentop{
-  display: flex;
+  font-size: 12px;
 }
 
 .fusen:hover {
